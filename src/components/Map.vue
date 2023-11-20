@@ -52,11 +52,9 @@
             marker.description = element.description;
             
             if (!element.active) {
-              console.log(marker)
               marker.model.runAnimations = false;
             }
             if (element.active) {
-              console.log(marker)
               marker.model.runAnimations = true;
             }
             if (element.status == 1) {
@@ -79,12 +77,10 @@
         this.dataMarkers[0].description = this.input
       },
       activeT1() {
-        this.dataMarkers[0].active = !this.dataMarkers[0].active
-        console.log(this.dataMarkers[0].active);
+        this.dataMarkers[0].active = !this.dataMarkers[0].active;
       },
       activeT2() {
-        this.dataMarkers[1].active = !this.dataMarkers[1].active
-        console.log(this.dataMarkers[1].active);
+        this.dataMarkers[1].active = !this.dataMarkers[1].active;
       },
       status1T1() {
         this.dataMarkers[0].status = 1;
@@ -149,7 +145,6 @@
           var updatePosition
           var position = Cesium.Cartographic.fromDegrees(marker.longitude, marker.latitude);
           Cesium.sampleTerrainMostDetailed(this.terrainProvider, [position]).then(function(data) {
-            console.log(marker.active)
             var model = viewer.entities.add({
               name: '',
               position: Cesium.Cartesian3.fromRadians(data[0].longitude,
