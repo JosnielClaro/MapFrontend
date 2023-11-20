@@ -8,6 +8,8 @@
     <button @click="status1T2">status1 T2</button>
     <button @click="status2T2">status2 T2</button>
     <button @click="status3T2">status3 T2</button>
+    <input type="text" v-model="input">
+    <button @click="actDescT1">actDescT1</button>
   </div>
   <div class="map-container">
     <div id="cesiumContainer">
@@ -28,25 +30,54 @@
           latitude: 46.87,
           active: false,
           status: 3,
-          description: 'Turbina 2'}],
+          description: 'Turbina 2'},
+        {longitude: 8.38,
+          latitude: 46.71,
+          active: true,
+          status: 2,
+          description: 'Turbina 3'}],
         terrainProvider: null,
         viewer: null,
+        input: "",
       }
     },
     watch: {
       
       dataMarkers: {
         deep: true,
-        handler() {
-          var modelCollection = this.viewer.entities;
-          modelCollection.removeAll();
-          this.addMarkers();
+        handler(items) {
+          var markers = this.viewer.entities.values;
+          items.forEach((element, index) => {
+            var marker = markers[index]
+            marker.description = element.description;
+            
+            if (!element.active) {
+              console.log(marker)
+              marker.model.runAnimations = false;
+            }
+            if (element.active) {
+              console.log(marker)
+              marker.model.runAnimations = true;
+            }
+            if (element.status == 1) {
+              marker.model.color = Cesium.Color.GREEN.withAlpha(0.9);
+            }
+            if (element.status == 2) {
+              marker.model.color = Cesium.Color.BLUE.withAlpha(0.9);
+            }
+            if (element.status == 3) {
+              marker.model.color = Cesium.Color.RED.withAlpha(0.9);
+            }
+          });
         }
         
         
       }
     },
     methods: {
+      actDescT1() {
+        this.dataMarkers[0].description = this.input
+      },
       activeT1() {
         this.dataMarkers[0].active = !this.dataMarkers[0].active
         console.log(this.dataMarkers[0].active);
