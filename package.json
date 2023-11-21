@@ -8,7 +8,9 @@
     "preview": "vite preview",
     "test:unit": "vitest",
     "build-only": "vite build",
-    "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false"
+    "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@maptiler/sdk": "^1.2.0",
@@ -24,7 +26,6 @@
     "@vitejs/plugin-vue-jsx": "^3.0.2",
     "@vue/test-utils": "^2.4.1",
     "@vue/tsconfig": "^0.4.0",
-    "gh-pages": "^6.1.0",
     "jsdom": "^22.1.0",
     "npm-run-all2": "^6.1.1",
     "typescript": "~5.2.0",
