@@ -62,6 +62,7 @@ import CesiumNavigation from "cesium-navigation-es6";
             Cesium.sampleTerrainMostDetailed(this.terrainProvider, [position]).then(function(data) {
               var updatePosition = Cesium.Cartesian3.fromRadians(data[0].longitude,
                   data[0].latitude, data[0].height);
+              marker.position = updatePosition;
               marker.orientation = Cesium.Transforms.headingPitchRollQuaternion(updatePosition, new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(element.orientation + 270, 0, 0)));
             })
             if (!element.active) {
@@ -71,13 +72,13 @@ import CesiumNavigation from "cesium-navigation-es6";
               marker.model.runAnimations = true;
             }
             if (element.status == 1) {
-              marker.model.color = Cesium.Color.GREEN.withAlpha(1);
+              marker.model.color = Cesium.Color.CHARTREUSE.withAlpha(1);
             }
             if (element.status == 2) {
-              marker.model.color = Cesium.Color.BLUE.withAlpha(1);
+              marker.model.color = Cesium.Color.GREY.withAlpha(1);
             }
             if (element.status == 3) {
-              marker.model.color = Cesium.Color.RED.withAlpha(1);
+              marker.model.color = Cesium.Color.ORANGERED.withAlpha(1);
             }
           });
         }
@@ -192,13 +193,13 @@ import CesiumNavigation from "cesium-navigation-es6";
               model.model.runAnimations = false;
             }
             if (marker.status == 1) {
-              model.model.color = Cesium.Color.GREEN.withAlpha(1);
+              model.model.color = Cesium.Color.CHARTREUSE.withAlpha(1);
             }
             if (marker.status == 2) {
-              model.model.color = Cesium.Color.BLUE.withAlpha(1);
+              model.model.color = Cesium.Color.GREY.withAlpha(1);
             }
             if (marker.status == 3) {
-              model.model.color = Cesium.Color.RED.withAlpha(1);
+              model.model.color = Cesium.Color.ORANGERED.withAlpha(1);
             }
           });
         })
