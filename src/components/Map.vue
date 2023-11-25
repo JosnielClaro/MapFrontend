@@ -58,7 +58,9 @@ import CesiumNavigation from "cesium-navigation-es6";
 
       scale: {
         handler(scale){
-          this.dataMarkers[1].scale = scale
+          this.dataMarkers.forEach(element => {
+            element.scale = scale
+          })
         }
       },
       
@@ -197,7 +199,7 @@ import CesiumNavigation from "cesium-navigation-es6";
               position: updatePosition,
               model: {
                 uri: "/EolicAnimate1m.glb",
-                scale: 300,
+                scale: 500,
               },
               description: marker.description
             })
