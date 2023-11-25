@@ -12,6 +12,7 @@
     <button @click="actDescT1">actDescT1</button>
     <input type="number" v-model="orientinput">
     <button @click="actOrientT3">actOrientT3</button>
+    <input type="range" min="90" max="3000" v-model="scale">
   </div>
   <div class="map-container">
     <div id="cesiumContainer">
@@ -30,26 +31,36 @@ import CesiumNavigation from "cesium-navigation-es6";
           active: true,
           status: 1,
           description: 'Turbina 1',
-          orientation: 0},
+          orientation: 0,
+          scale: 90},
         {longitude: 8.25,
           latitude: 46.87,
           active: false,
           status: 3,
           description: 'Turbina 2',
-          orientation: 90},
+          orientation: 90,
+          scale: 90},
         {longitude: 8.38,
           latitude: 46.71,
           active: true,
           status: 2,
           description: 'Turbina 3',
-          orientation: 180}],
+          orientation: 180,
+          scale: 90}],
         terrainProvider: null,
         viewer: null,
         input: "",
         orientinput: null,
+        scale: null,
       }
     },
     watch: {
+
+      scale: {
+        handler(scale){
+          this.dataMarkers[1].scale = scale
+        }
+      },
       
       dataMarkers: {
         deep: true,
@@ -64,6 +75,7 @@ import CesiumNavigation from "cesium-navigation-es6";
                   data[0].latitude, data[0].height);
               marker.position = updatePosition;
               marker.orientation = Cesium.Transforms.headingPitchRollQuaternion(updatePosition, new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(element.orientation + 270, 0, 0)));
+              marker.model.scale = element.scale;
             })
             if (!element.active) {
               marker.model.runAnimations = false;
@@ -184,7 +196,7 @@ import CesiumNavigation from "cesium-navigation-es6";
               orientation: Cesium.Transforms.headingPitchRollQuaternion(updatePosition, new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(marker.orientation + 270, 0, 0))),
               position: updatePosition,
               model: {
-                uri: "/EolicAnimate.glb",
+                uri: "/EolicAnimate1m.glb",
                 scale: 300,
               },
               description: marker.description
@@ -225,6 +237,9 @@ import CesiumNavigation from "cesium-navigation-es6";
     mounted() {
       this.createMap();
       this.addMarkers();
+      setInterval(() => {
+        this.dataMarkers[0].orientation = this.dataMarkers[0].orientation + 20
+      }, 5000);
 
 
       
