@@ -177,7 +177,16 @@ import CesiumNavigation from "cesium-navigation-es6";
         this.viewer.scene.globe.depthTestAgainstTerrain = true;
         this.viewer.clock.multiplier = 1; // Esto hace que el tiempo avance a velocidad normal
         this.viewer.clock.shouldAnimate = true; // Esto asegura que el reloj esté activo
-        
+        var viewer = this.viewer
+        function handleDoubleClick() {
+          console.log('fasdw')
+          viewer.scene.screenSpaceCameraController.enableInputs = false;
+          setTimeout(() => {
+            viewer.scene.screenSpaceCameraController.enableInputs = true;
+          }, 10);
+        }
+        this.viewer.screenSpaceEventHandler.setInputAction(handleDoubleClick, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+
         let cesiumNavigation = new CesiumNavigation(this.viewer, {
           enableCompass: true,
           enableZoomControls: true,
