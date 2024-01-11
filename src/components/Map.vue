@@ -16,6 +16,13 @@
   </div>
   <div class="map-container">
     <div id="cesiumContainer">
+      <div id="markerList"> 
+        <div v-for="(marker, id) in dataMarkers" :key="id" @click="Centrar(marker.longitude, marker.latitude)">
+          <img :id="marker.active? 'icons':''" v-if="marker.status == 1" src="/fanverde.png" alt="">
+          <img :id="marker.active? 'icons':''" v-if="marker.status == 2" src="/fangris.png" alt="">
+          <img :id="marker.active? 'icons':''" v-if="marker.status == 3" src="/fanrojo.png" alt="">
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -101,6 +108,15 @@ import CesiumNavigation from "cesium-navigation-es6";
       }
     },
     methods: {
+      Centrar(longitude, latitude){
+        const viewer = this.viewer
+        var position = Cesium.Cartesian3.fromDegrees(longitude, latitude - 0.2, 9800);
+        viewer.camera.flyTo({destination: position,
+          orientation: {
+            pitch: Cesium.Math.toRadians(-25)
+          }})
+        console.log(position)
+      },
       actDescT1() {
         this.dataMarkers[0].description = this.input
       },
@@ -270,9 +286,34 @@ import CesiumNavigation from "cesium-navigation-es6";
   #cesiumContainer {position:relative; 
     height: 100%;
     width: 100%;
+    z-index: 1;
   }
   .map-container {
     width: 800px;
     height: 600px;
+  }
+  #markerList {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    z-index: 2;
+  }
+  #icons {
+    margin: 5px;
+    text-align: center;
+    animation: rotation 8s infinite linear;
+  }
+
+  @keyframes rotation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(359deg);
+    }
   }
 </style>
