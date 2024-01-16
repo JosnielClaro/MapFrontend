@@ -56,8 +56,8 @@ import CesiumNavigation from "cesium-navigation-es6";
           orientation: 180,
           scale: 90}],
         torre: {longitude: 8.3700000001, latitude: 46.7100000001,},
-        veletas: [{altura: 20, orientation: 0, active: false}, {altura: 80, orientation: 0, active: true}],
-        anenometros: [{altura: 10, active: true}, {altura: 90, active: false}],
+        veletas: [{altura: 60, orientation: 0, active: false}, {altura: 80, orientation: 90, active: true}, {altura: 90, orientation: 0, active: true}],
+        anenometros: [{altura: 60, active: true}, {altura: 90, active: false}],
         terrainProvider: null,
         viewer: null,
         input: "",
@@ -273,7 +273,7 @@ import CesiumNavigation from "cesium-navigation-es6";
               name: '',
               position: updatePosition,
               model: {
-                uri: "/anenometro.glb",
+                uri: "/anemometro -90.glb",
                 scale: 1,
               },
             })
@@ -287,7 +287,7 @@ import CesiumNavigation from "cesium-navigation-es6";
               name: '',
               position: updatePosition,
               model: {
-                uri: "/soporte.glb",
+                uri: "/soporte -90.glb",
                 scale: 1,
               },
             })
@@ -303,6 +303,7 @@ import CesiumNavigation from "cesium-navigation-es6";
                 Vposition.latitude, data[0].height + element.altura);
             var model = viewer.entities.add({
               name: '',
+              orientation: Cesium.Transforms.headingPitchRollQuaternion(VupdatePosition, new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(element.orientation + 270, 0, 0))),
               position: VupdatePosition,
               model: {
                 uri: "/veleta.glb",
