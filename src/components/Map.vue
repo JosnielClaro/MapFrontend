@@ -13,6 +13,7 @@
     <input type="number" v-model="orientinput">
     <button @click="actOrientT3">actOrientT3</button>
     <input type="range" min="90" max="3000" v-model="scale">
+    <button @click="getCameraCoordinates"> posicion de la camara </button>
   </div>
   <div class="map-container">
     <div id="cesiumContainer">
@@ -54,6 +55,9 @@ import CesiumNavigation from "cesium-navigation-es6";
           description: 'Turbina 3',
           orientation: 180,
           scale: 90}],
+        torre: {longitude: 8.3700000001, latitude: 46.7100000001,},
+        veletas: [{altura: 20, orientation: 0, active: false}, {altura: 80, orientation: 0, active: true}],
+        anenometros: [{altura: 10, active: true}, {altura: 90, active: false}],
         terrainProvider: null,
         viewer: null,
         input: "",
@@ -109,9 +113,8 @@ import CesiumNavigation from "cesium-navigation-es6";
     },
     methods: {
       Centrar(longitude, latitude){
-        const viewer = this.viewer
-        var position = Cesium.Cartesian3.fromDegrees(longitude, latitude - 0.2, 9800);
-        viewer.camera.flyTo({destination: position,
+        var position = Cesium.Cartesian3.fromDegrees(longitude, latitude - 0.000002, 2200);
+        this.viewer.camera.flyTo({destination: position,
           orientation: {
             pitch: Cesium.Math.toRadians(-25)
           }})
@@ -185,7 +188,7 @@ import CesiumNavigation from "cesium-navigation-es6";
         
 
         this.viewer.camera.setView({
-          destination: Cesium.Cartesian3.fromDegrees(8.487755669693277, 46.101943420094244 , 19657.0371192774),
+          destination: Cesium.Cartesian3.fromDegrees(8.370234123540236, 46.709413390003604 , 2765.777159322902),
           orientation: {
             pitch: Cesium.Math.toRadians(-20)
           }
@@ -246,6 +249,83 @@ import CesiumNavigation from "cesium-navigation-es6";
         
         
       },
+      addTorre() {
+        var viewer = this.viewer
+        var position = Cesium.Cartographic.fromDegrees(this.torre.longitude, this.torre.latitude);
+          Cesium.sampleTerrainMostDetailed(this.terrainProvider, [position]).then(function(data) {
+            var updatePosition = Cesium.Cartesian3.fromRadians(data[0].longitude,
+                data[0].latitude, data[0].height);
+            var model = viewer.entities.add({
+              name: '',
+              position: updatePosition,
+              model: {
+                uri: "/torre.glb",
+                scale: 1,
+              },
+            })
+          })
+        this.anenometros.forEach(element => {
+          var position = Cesium.Cartographic.fromDegrees(this.torre.longitude, this.torre.latitude);
+          Cesium.sampleTerrainMostDetailed(this.terrainProvider, [position]).then(function(data) {
+            var updatePosition = Cesium.Cartesian3.fromRadians(data[0].longitude,
+                data[0].latitude, data[0].height + element.altura);
+            var model = viewer.entities.add({
+              name: '',
+              position: updatePosition,
+              model: {
+                uri: "/anenometro.glb",
+                scale: 1,
+              },
+            })
+            if (element.active) {
+              model.model.color = Cesium.Color.CHARTREUSE.withAlpha(1);
+            }
+            else {
+              model.model.color = Cesium.Color.GREY.withAlpha(1);
+            }
+            var sop = viewer.entities.add({
+              name: '',
+              position: updatePosition,
+              model: {
+                uri: "/soporte.glb",
+                scale: 1,
+              },
+            })
+          })
+        });
+        this.veletas.forEach(element => {
+          var Vposition = Cesium.Cartographic.fromDegrees(this.torre.longitude - 0.0000064, this.torre.latitude + 0.000035);
+          var position = Cesium.Cartographic.fromDegrees(this.torre.longitude, this.torre.latitude);
+          Cesium.sampleTerrainMostDetailed(this.terrainProvider, [position]).then(function(data) {
+            var updatePosition = Cesium.Cartesian3.fromRadians(data[0].longitude,
+                data[0].latitude, data[0].height + element.altura);
+            var VupdatePosition = Cesium.Cartesian3.fromRadians(Vposition.longitude,
+                Vposition.latitude, data[0].height + element.altura);
+            var model = viewer.entities.add({
+              name: '',
+              position: VupdatePosition,
+              model: {
+                uri: "/veleta.glb",
+                scale: 1,
+              },
+            })
+            if (element.active) {
+              model.model.color = Cesium.Color.CHARTREUSE.withAlpha(1);
+            }
+            else {
+              model.model.color = Cesium.Color.GREY.withAlpha(1);
+            }
+            var model = viewer.entities.add({
+              name: '',
+              position: updatePosition,
+              model: {
+                uri: "/soporte.glb",
+                scale: 1,
+              },
+            })
+          })
+      })
+    },
       getCameraCoordinates() {
             var cameraPositionCartographic = Cesium.Cartographic.fromCartesian(this.viewer.camera.position);
 
@@ -264,6 +344,7 @@ import CesiumNavigation from "cesium-navigation-es6";
     mounted() {
       this.createMap();
       this.addMarkers();
+      this.addTorre();
       setInterval(() => {
         this.dataMarkers[0].orientation = this.dataMarkers[0].orientation + 20
       }, 5000);
