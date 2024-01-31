@@ -45,8 +45,8 @@ import CesiumNavigation from "cesium-navigation-es6";
         handler(rotation){
             var markers = this.viewer.entities.values;
             markers.forEach(marker => {
-              if (marker.name == this.tracker){
-                marker.orientation = Cesium.Transforms.headingPitchRollQuaternion(marker.position.getValue(Cesium.JulianDate.now()), new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(355.7), Cesium.Math.toRadians(rotation)))
+              if (marker.properties !== undefined && marker.properties.tracker == this.tracker){
+                  marker.orientation = Cesium.Transforms.headingPitchRollQuaternion(marker.position.getValue(Cesium.JulianDate.now()), new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(355.7), Cesium.Math.toRadians(rotation)))
               }
             });
         }
@@ -71,33 +71,6 @@ import CesiumNavigation from "cesium-navigation-es6";
       },
       actDescT1() {
         this.addMarkers()
-      },
-      actOrientT3() {
-        this.dataMarkers[2].orientation = this.orientinput
-      },
-      activeT1() {
-        this.dataMarkers[0].active = !this.dataMarkers[0].active;
-      },
-      activeT2() {
-        this.dataMarkers[1].active = !this.dataMarkers[1].active;
-      },
-      status1T1() {
-        this.dataMarkers[0].status = 1;
-      },
-      status2T1() {
-        this.dataMarkers[0].status = 2;
-      },
-      status3T1() {
-        this.dataMarkers[0].status = 3;
-      },
-      status1T2() {
-        this.dataMarkers[1].status = 1;
-      },
-      status2T2() {
-        this.dataMarkers[1].status = 2;
-      },
-      status3T2() {
-        this.dataMarkers[1].status = 3;
       },
       degreesToRadians(degrees) {
         return degrees * Math.PI / 180;
@@ -227,18 +200,32 @@ import CesiumNavigation from "cesium-navigation-es6";
           });
         })
         this.dataMarkers.forEach(marker => {
-          //Obtener la altura del terreno
+          
           if (marker.type == '30m') {
             var position = Cesium.Cartographic.fromDegrees(marker.longitude, marker.latitude);
           Cesium.sampleTerrainMostDetailed(this.terrainProvider, [position]).then(function(data) {
             var updatePosition = Cesium.Cartesian3.fromRadians(data[0].longitude,
                 data[0].latitude, data[0].height + 2);
             var model = viewer.entities.add({
-              name: marker.tracker,
+              name: '',
               orientation: Cesium.Transforms.headingPitchRollQuaternion(updatePosition, new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(355.7), Cesium.Math.toRadians(20))),
               position: updatePosition,
               model: {
                 uri: "/PanelSuperior30m.glb",
+                scale: 1,
+              },
+              properties: {
+                tracker: marker.tracker,
+              }
+            })
+            var BaseupdatePosition = Cesium.Cartesian3.fromRadians(data[0].longitude,
+                data[0].latitude, data[0].height);
+            viewer.entities.add({
+              name: '',
+              orientation: Cesium.Transforms.headingPitchRollQuaternion(BaseupdatePosition, new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(355.7))),
+              position: BaseupdatePosition,
+              model: {
+                uri: "/PanelBase30m.glb",
                 scale: 1,
               },
             })
@@ -250,11 +237,22 @@ import CesiumNavigation from "cesium-navigation-es6";
             var updatePosition = Cesium.Cartesian3.fromRadians(data[0].longitude,
                 data[0].latitude, data[0].height + 2 );
             var model = viewer.entities.add({
-              name: marker.tracker,
+              name: '',
               orientation: Cesium.Transforms.headingPitchRollQuaternion(updatePosition, new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(355.7), Cesium.Math.toRadians(-50))),
               position: updatePosition,
               model: {
                 uri: "/PanelSuperior32m.glb",
+                scale: 1,
+              },
+            })
+            var BaseupdatePosition = Cesium.Cartesian3.fromRadians(data[0].longitude,
+                data[0].latitude, data[0].height);
+            viewer.entities.add({
+              name: '',
+              orientation: Cesium.Transforms.headingPitchRollQuaternion(BaseupdatePosition, new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(355.7))),
+              position: BaseupdatePosition,
+              model: {
+                uri: "/PanelBase32m.glb",
                 scale: 1,
               },
             })
